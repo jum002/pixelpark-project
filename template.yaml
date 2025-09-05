@@ -1,0 +1,73 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: PixelPark API Deployment.
+
+Globals:
+  Function:
+    Runtime: python3.11
+    Timeout: 10
+    MemorySize: 256
+    Tracing: Active
+    Environment:
+      Variables:
+        DB_NAME: !Ref DbName
+        DB_USER: !Ref DbUser
+        DB_HOST: !Ref DbHost
+        DB_PASSWORD: !Ref DbPassword
+
+Parameters:
+  DbName:
+    Type: String
+  DbUser:
+    Type: String
+  DbHost:
+    Type: String
+  DbPassword:
+    Type: String
+
+Resources:
+  # API Gateway
+  PixelParkApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: PixelPark
+      StageName: dev
+      EndpointConfiguration: REGIONAL
+      TracingEnabled: true
+      # Cors:
+      #   AllowMethods: "'GET,OPTIONS'"
+      #   AllowOrigins: "'*'"
+
+  # GET /products
+  ProductsGetAllFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: PixelPark_productsGetAll
+      CodeUri: src/lambda_functions/productsGetAll
+      Handler: app.lambda_handler
+      Layers:
+        - arn:aws:lambda:us-west-1:809604783960:layer:PixelPark_layer:3
+      Events:
+        GetProducts:
+          Type: Api
+          Properties:
+            RestApiId: !Ref PixelParkApi
+            Path: /products
+            Method: GET
+
+  # GET /products/{id}
+  ProductsGetByIdFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: PixelPark_productsGetById
+      CodeUri: src/lambda_functions/productsGetById
+      Handler: app.lambda_handler
+      Layers:
+        - arn:aws:lambda:us-west-1:809604783960:layer:PixelPark_layer:3
+      Events:
+        GetProductById:
+          Type: Api
+          Properties:
+            RestApiId: !Ref PixelParkApi
+            Path: /products/{id}
+            Method: GET
