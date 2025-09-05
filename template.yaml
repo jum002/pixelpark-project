@@ -42,7 +42,6 @@ Resources:
   ProductsGetAllFn:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: PixelPark_productsGetAll
       CodeUri: src/lambda_functions/productsGetAll/
       Handler: app.lambda_handler
       Layers:
@@ -59,7 +58,6 @@ Resources:
   ProductsGetByIdFn:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: PixelPark_productsGetById
       CodeUri: src/lambda_functions/productsGetById/
       Handler: app.lambda_handler
       Layers:
