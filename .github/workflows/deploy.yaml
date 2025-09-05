@@ -21,9 +21,6 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Debug region
-        run: echo "AWS_REGION is ${{ secrets.AWS_REGION }}"
-
       - name: Install SAM CLI
         run: pip install aws-sam-cli
 
