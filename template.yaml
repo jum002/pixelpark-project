@@ -43,7 +43,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: PixelPark_productsGetAll
-      CodeUri: src/lambda_functions/productsGetAll
+      CodeUri: src/lambda_functions/productsGetAll/
       Handler: app.lambda_handler
       Layers:
         - arn:aws:lambda:us-west-1:809604783960:layer:PixelPark_layer:3
@@ -60,7 +60,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: PixelPark_productsGetById
-      CodeUri: src/lambda_functions/productsGetById
+      CodeUri: src/lambda_functions/productsGetById/
       Handler: app.lambda_handler
       Layers:
         - arn:aws:lambda:us-west-1:809604783960:layer:PixelPark_layer:3
