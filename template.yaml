@@ -14,8 +14,7 @@ Globals:
         DB_USER: !Ref DbUser
         DB_HOST: !Ref DbHost
         DB_PASSWORD: !Ref DbPassword
-        COGNITO_CLIENT_ID: !Ref CognitoClientId
-        COGNITO_USER_POOL_ID: !Ref CognitoUserPool
+        COGNITO_CLIENT_ID: !Ref PixelParkUserPoolClient
 
 Parameters:
   DbName:
@@ -26,13 +25,38 @@ Parameters:
     Type: String
   DbPassword:
     Type: String
-  CognitoUserPool:
-    Type: String
-  CognitoClientId:
-    Type: String
 
 Resources:
-  # API Gateway
+  # ========== Cognito ==========
+
+  PixelParkUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: PixelParkUserPool
+      AutoVerifiedAttributes:
+        - email
+      UsernameAttributes:
+        - email
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireUppercase: true
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: false
+
+  PixelParkUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: PixelParkAppClient
+      UserPoolId: !Ref PixelParkUserPool
+      GenerateSecret: false
+      ExplicitAuthFlows:
+        - ADMIN_NO_SRP_AUTH
+        - USER_PASSWORD_AUTH
+
+    # ========== API Gateway ==========
+
   PixelParkApi:
     Type: AWS::Serverless::Api
     Properties:
@@ -43,7 +67,7 @@ Resources:
         DefaultAuthorizer: CognitoAuthorizer
         Authorizers:
           CognitoAuthorizer:
-            UserPoolArn: arn:aws:cognito-idp:us-west-1:809604783960:userpool/us-west-1_yM2bICWlZ
+            UserPoolArn: !GetAtt PixelParkUserPool.Arn
       TracingEnabled: true
       # Cors:
       #   AllowMethods: "'GET,OPTIONS'"
@@ -153,7 +177,7 @@ Resources:
         CognitoPostConfirmation:
           Type: Cognito
           Properties:
-            UserPool: !Ref CognitoUserPool
+            UserPool: !Ref PixelParkUserPool
             Trigger: PostConfirmation
 
   # ========== User APIs ==========

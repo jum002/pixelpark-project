@@ -3,7 +3,7 @@ import os, json, boto3
 # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/cognito-idp/client/sign_up.html
 
 cognito = boto3.client('cognito-idp')
-CLIENT_ID = os.environ['CLIENT_ID']
+CLIENT_ID = os.environ['COGNITO_CLIENT_ID']
 
 def lambda_handler(event, context):
     body = json.loads(event.get('body') or '{}')
