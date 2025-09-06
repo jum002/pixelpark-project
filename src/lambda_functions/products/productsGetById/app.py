@@ -24,13 +24,19 @@ def lambda_handler(event, context):
         conn = get_conn()
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
             cur.execute(f"SELECT * FROM Products WHERE id = {product_id};")
-            rows = cur.fetchall()
+            row = cur.fetchone()
+
+        if not row:
+            return {
+                "statusCode": 404,
+                "body": json.dumps({"error": "Product data not found"})
+            }
         
         return {
             "statusCode": 200,
             "body": json.dumps({
                 "success": True,
-                "data": rows
+                "data": row
             }, default=str)
         }
     

@@ -14,6 +14,8 @@ Globals:
         DB_USER: !Ref DbUser
         DB_HOST: !Ref DbHost
         DB_PASSWORD: !Ref DbPassword
+        COGNITO_CLIENT_ID: !Ref CognitoClientId
+        COGNITO_USER_POOL_ID: !Ref CognitoUserPool
 
 Parameters:
   DbName:
@@ -24,6 +26,10 @@ Parameters:
     Type: String
   DbPassword:
     Type: String
+  CognitoUserPool:
+    Type: String
+  CognitoClientId:
+    Type: String
 
 Resources:
   # API Gateway
@@ -33,16 +39,23 @@ Resources:
       Name: PixelPark
       StageName: dev
       EndpointConfiguration: REGIONAL
+      Auth:
+        DefaultAuthorizer: CognitoAuthorizer
+        Authorizers:
+          CognitoAuthorizer:
+            UserPoolArn: arn:aws:cognito-idp:us-west-1:809604783960:userpool/us-west-1_yM2bICWlZ
       TracingEnabled: true
       # Cors:
       #   AllowMethods: "'GET,OPTIONS'"
       #   AllowOrigins: "'*'"
 
+  # ========== Products APIs ==========
+
   # GET /products
   ProductsGetAllFn:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: src/lambda_functions/productsGetAll/
+      CodeUri: src/lambda_functions/products/productsGetAll/
       Handler: app.lambda_handler
       Layers:
         - arn:aws:lambda:us-west-1:809604783960:layer:PixelPark_layer:3
@@ -58,7 +71,7 @@ Resources:
   ProductsGetByIdFn:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: src/lambda_functions/productsGetById/
+      CodeUri: src/lambda_functions/products/productsGetById/
       Handler: app.lambda_handler
       Layers:
         - arn:aws:lambda:us-west-1:809604783960:layer:PixelPark_layer:3
@@ -69,3 +82,95 @@ Resources:
             RestApiId: !Ref PixelParkApi
             Path: /products/{id}
             Method: GET
+
+  # ========== Auth APIs ==========
+
+  # POST /auth/register
+  UserRegisterFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/lambda_functions/auth/userRegister/
+      Handler: app.lambda_handler
+      Events:
+        RegisterUser:
+          Type: Api
+          Properties:
+            RestApiId: !Ref PixelParkApi
+            Path: /auth/register
+            Method: POST
+
+  # POST /auth/confirm
+  UserConfirmFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/lambda_functions/auth/userConfirm/
+      Handler: app.lambda_handler
+      Events:
+        ConfirmUser:
+          Type: Api
+          Properties:
+            RestApiId: !Ref PixelParkApi
+            Path: /auth/confirm
+            Method: POST
+
+  # POST /auth/login
+  UserLoginFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/lambda_functions/auth/userLogin/
+      Handler: app.lambda_handler
+      Events:
+        LoginUser:
+          Type: Api
+          Properties:
+            RestApiId: !Ref PixelParkApi
+            Path: /auth/login
+            Method: POST
+
+  # POST /auth/logout
+  UserLogoutFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/lambda_functions/auth/userLogout/
+      Handler: app.lambda_handler
+      Events:
+        LogoutUser:
+          Type: Api
+          Properties:
+            RestApiId: !Ref PixelParkApi
+            Path: /auth/logout
+            Method: POST
+
+  # PostConfirmation Trigger
+  UserCreateFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/lambda_functions/auth/userCreate/
+      Handler: app.lambda_handler
+      Layers:
+        - arn:aws:lambda:us-west-1:809604783960:layer:PixelPark_layer:3
+      Events:
+        CognitoPostConfirmation:
+          Type: Cognito
+          Properties:
+            UserPool: !Ref CognitoUserPool
+            Trigger: PostConfirmation
+
+  # ========== User APIs ==========
+
+  UserProfileFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/lambda_functions/profile/profileGetUser
+      Handler: app.lambda_handler
+      Layers:
+        - arn:aws:lambda:us-west-1:809604783960:layer:PixelPark_layer:3
+      Events:
+        GetUserProfile:
+          Type: Api
+          Properties:
+            RestApiId: !Ref PixelParkApi
+            Path: /profile
+            Method: GET
+            Auth:
+              Authorizer: CognitoAuthorizer
