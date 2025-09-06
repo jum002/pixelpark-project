@@ -31,34 +31,16 @@ Resources:
         - ADMIN_NO_SRP_AUTH
         - USER_PASSWORD_AUTH
 
-  # ========== API Gateway ==========
-
-  PixelParkApi:
-    Type: AWS::Serverless::Api
-    Properties:
-      Name: PixelPark
-      StageName: dev
-      EndpointConfiguration: REGIONAL
-      Auth:
-        DefaultAuthorizer: CognitoAuthorizer
-        Authorizers:
-          CognitoAuthorizer:
-            UserPoolArn: !GetAtt PixelParkUserPool.Arn
-      TracingEnabled: true
-      # Cors:
-      #   AllowMethods: "'GET,OPTIONS'"
-      #   AllowOrigins: "'*'"
-
 Outputs:
   PixelParkUserPoolId:
     Value: !Ref PixelParkUserPool
     Export:
       Name: PixelParkUserPoolId
+  PixelParkUserPoolArn:
+    Value: !GetAtt PixelParkUserPool.Arn
+    Export:
+      Name: PixelParkUserPoolArn
   PixelParkUserPoolClientId:
     Value: !Ref PixelParkUserPoolClient
     Export:
       Name: PixelParkUserPoolClientId
-  PixelParkApiId:
-    Value: !Ref PixelParkApi
-    Export:
-      Name: PixelParkApiId

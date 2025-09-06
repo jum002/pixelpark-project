@@ -27,6 +27,24 @@ Parameters:
     Type: String
 
 Resources:
+  # ========== API Gateway ==========
+
+  PixelParkApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: PixelPark
+      StageName: dev
+      EndpointConfiguration: REGIONAL
+      Auth:
+        DefaultAuthorizer: CognitoAuthorizer
+        Authorizers:
+          CognitoAuthorizer:
+            UserPoolArn: !ImportValue PixelParkUserPoolArn
+      TracingEnabled: true
+      # Cors:
+      #   AllowMethods: "'GET,OPTIONS'"
+      #   AllowOrigins: "'*'"
+
   # ========== Products APIs ==========
 
   # GET /products
@@ -41,7 +59,7 @@ Resources:
         GetProducts:
           Type: Api
           Properties:
-            RestApiId: !ImportValue PixelParkApiId
+            RestApiId: !Ref PixelParkApi
             Path: /products
             Method: GET
 
@@ -57,7 +75,7 @@ Resources:
         GetProductById:
           Type: Api
           Properties:
-            RestApiId: !ImportValue PixelParkApiId
+            RestApiId: !Ref PixelParkApi
             Path: /products/{id}
             Method: GET
 
@@ -73,7 +91,7 @@ Resources:
         RegisterUser:
           Type: Api
           Properties:
-            RestApiId: !ImportValue PixelParkApiId
+            RestApiId: !Ref PixelParkApi
             Path: /auth/register
             Method: POST
 
@@ -87,7 +105,7 @@ Resources:
         ConfirmUser:
           Type: Api
           Properties:
-            RestApiId: !ImportValue PixelParkApiId
+            RestApiId: !Ref PixelParkApi
             Path: /auth/confirm
             Method: POST
 
@@ -101,7 +119,7 @@ Resources:
         LoginUser:
           Type: Api
           Properties:
-            RestApiId: !ImportValue PixelParkApiId
+            RestApiId: !Ref PixelParkApi
             Path: /auth/login
             Method: POST
 
@@ -115,7 +133,7 @@ Resources:
         LogoutUser:
           Type: Api
           Properties:
-            RestApiId: !ImportValue PixelParkApiId
+            RestApiId: !Ref PixelParkApi
             Path: /auth/logout
             Method: POST
 
@@ -147,7 +165,7 @@ Resources:
         GetUserProfile:
           Type: Api
           Properties:
-            RestApiId: !ImportValue PixelParkApiId
+            RestApiId: !Ref PixelParkApi
             Path: /profile
             Method: GET
             Auth:
