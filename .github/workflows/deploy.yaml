@@ -45,7 +45,7 @@ jobs:
         run: |
           sam build -t template_lambda.yaml
           sam deploy \
-            --template-file template_lambda.yaml
+            --template-file template_lambda.yaml \
             --stack-name pixelpark-lambda-dev \
             --capabilities CAPABILITY_IAM \
             --no-fail-on-empty-changeset \
