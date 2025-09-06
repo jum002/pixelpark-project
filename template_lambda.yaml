@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
-Description: PixelPark API Deployment.
+Description: PixelPark Lambda Deployment.
 
 Globals:
   Function:
@@ -14,7 +14,7 @@ Globals:
         DB_USER: !Ref DbUser
         DB_HOST: !Ref DbHost
         DB_PASSWORD: !Ref DbPassword
-        COGNITO_CLIENT_ID: !Ref PixelParkUserPoolClient
+        COGNITO_CLIENT_ID: !ImportValue PixelParkUserPoolClientId
 
 Parameters:
   DbName:
@@ -27,52 +27,6 @@ Parameters:
     Type: String
 
 Resources:
-  # ========== Cognito ==========
-
-  PixelParkUserPool:
-    Type: AWS::Cognito::UserPool
-    Properties:
-      UserPoolName: PixelParkUserPool
-      AutoVerifiedAttributes:
-        - email
-      UsernameAttributes:
-        - email
-      Policies:
-        PasswordPolicy:
-          MinimumLength: 8
-          RequireUppercase: true
-          RequireLowercase: true
-          RequireNumbers: true
-          RequireSymbols: false
-
-  PixelParkUserPoolClient:
-    Type: AWS::Cognito::UserPoolClient
-    Properties:
-      ClientName: PixelParkAppClient
-      UserPoolId: !Ref PixelParkUserPool
-      GenerateSecret: false
-      ExplicitAuthFlows:
-        - ADMIN_NO_SRP_AUTH
-        - USER_PASSWORD_AUTH
-
-    # ========== API Gateway ==========
-
-  PixelParkApi:
-    Type: AWS::Serverless::Api
-    Properties:
-      Name: PixelPark
-      StageName: dev
-      EndpointConfiguration: REGIONAL
-      Auth:
-        DefaultAuthorizer: CognitoAuthorizer
-        Authorizers:
-          CognitoAuthorizer:
-            UserPoolArn: !GetAtt PixelParkUserPool.Arn
-      TracingEnabled: true
-      # Cors:
-      #   AllowMethods: "'GET,OPTIONS'"
-      #   AllowOrigins: "'*'"
-
   # ========== Products APIs ==========
 
   # GET /products
@@ -87,7 +41,7 @@ Resources:
         GetProducts:
           Type: Api
           Properties:
-            RestApiId: !Ref PixelParkApi
+            RestApiId: !ImportValue PixelParkApiId
             Path: /products
             Method: GET
 
@@ -103,7 +57,7 @@ Resources:
         GetProductById:
           Type: Api
           Properties:
-            RestApiId: !Ref PixelParkApi
+            RestApiId: !ImportValue PixelParkApiId
             Path: /products/{id}
             Method: GET
 
@@ -119,7 +73,7 @@ Resources:
         RegisterUser:
           Type: Api
           Properties:
-            RestApiId: !Ref PixelParkApi
+            RestApiId: !ImportValue PixelParkApiId
             Path: /auth/register
             Method: POST
 
@@ -133,7 +87,7 @@ Resources:
         ConfirmUser:
           Type: Api
           Properties:
-            RestApiId: !Ref PixelParkApi
+            RestApiId: !ImportValue PixelParkApiId
             Path: /auth/confirm
             Method: POST
 
@@ -147,7 +101,7 @@ Resources:
         LoginUser:
           Type: Api
           Properties:
-            RestApiId: !Ref PixelParkApi
+            RestApiId: !ImportValue PixelParkApiId
             Path: /auth/login
             Method: POST
 
@@ -161,7 +115,7 @@ Resources:
         LogoutUser:
           Type: Api
           Properties:
-            RestApiId: !Ref PixelParkApi
+            RestApiId: !ImportValue PixelParkApiId
             Path: /auth/logout
             Method: POST
 
@@ -177,7 +131,7 @@ Resources:
         CognitoPostConfirmation:
           Type: Cognito
           Properties:
-            UserPool: !Ref PixelParkUserPool
+            UserPool: !ImportValue PixelParkUserPoolId
             Trigger: PostConfirmation
 
   # ========== User APIs ==========
@@ -193,7 +147,7 @@ Resources:
         GetUserProfile:
           Type: Api
           Properties:
-            RestApiId: !Ref PixelParkApi
+            RestApiId: !ImportValue PixelParkApiId
             Path: /profile
             Method: GET
             Auth:

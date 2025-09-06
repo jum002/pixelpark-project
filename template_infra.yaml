@@ -1,0 +1,64 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: PixelPark API Infra Deployment.
+
+Resources:
+  # ========== Cognito ==========
+
+  PixelParkUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: PixelParkUserPool
+      AutoVerifiedAttributes:
+        - email
+      UsernameAttributes:
+        - email
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireUppercase: true
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: false
+
+  PixelParkUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: PixelParkAppClient
+      UserPoolId: !Ref PixelParkUserPool
+      GenerateSecret: false
+      ExplicitAuthFlows:
+        - ADMIN_NO_SRP_AUTH
+        - USER_PASSWORD_AUTH
+
+  # ========== API Gateway ==========
+
+  PixelParkApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: PixelPark
+      StageName: dev
+      EndpointConfiguration: REGIONAL
+      Auth:
+        DefaultAuthorizer: CognitoAuthorizer
+        Authorizers:
+          CognitoAuthorizer:
+            UserPoolArn: !GetAtt PixelParkUserPool.Arn
+      TracingEnabled: true
+      # Cors:
+      #   AllowMethods: "'GET,OPTIONS'"
+      #   AllowOrigins: "'*'"
+
+Outputs:
+  PixelParkUserPoolId:
+    Value: !Ref PixelParkUserPool
+    Export:
+      Name: PixelParkUserPoolId
+  PixelParkUserPoolClientId:
+    Value: !Ref PixelParkUserPoolClient
+    Export:
+      Name: PixelParkUserPoolClientId
+  PixelParkApiId:
+    Value: !Ref PixelParkApi
+    Export:
+      Name: PixelParkApiId

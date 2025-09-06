@@ -34,10 +34,20 @@ jobs:
       - name: SAM Build
         run: sam build
 
-      - name: SAM Deploy
+      - name: SAM Deploy Infra Stack
         run: |
           sam deploy \
-            --stack-name pixelpark-dev \
+            --template-file template_infra.yaml \
+            --stack-name pixelpark-infra-dev \
+            --capabilities CAPABILITY_IAM \
+            --no-fail-on-empty-changeset \
+            --resolve-s3
+
+      - name: SAM Deploy Lambda Stack
+        run: |
+          sam deploy \
+            --template-file template_lambda.yaml
+            --stack-name pixelpark-lambda-dev \
             --capabilities CAPABILITY_IAM \
             --no-fail-on-empty-changeset \
             --resolve-s3 \
