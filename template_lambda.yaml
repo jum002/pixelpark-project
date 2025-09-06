@@ -101,6 +101,8 @@ Resources:
     Properties:
       CodeUri: src/lambda_functions/auth/userConfirm/
       Handler: app.lambda_handler
+      Layers:
+        - arn:aws:lambda:us-west-1:809604783960:layer:PixelPark_layer:3
       Events:
         ConfirmUser:
           Type: Api
@@ -136,21 +138,6 @@ Resources:
             RestApiId: !Ref PixelParkApi
             Path: /auth/logout
             Method: POST
-
-  # PostConfirmation Trigger
-  UserCreateFn:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: src/lambda_functions/auth/userCreate/
-      Handler: app.lambda_handler
-      Layers:
-        - arn:aws:lambda:us-west-1:809604783960:layer:PixelPark_layer:3
-      Events:
-        CognitoPostConfirmation:
-          Type: Cognito
-          Properties:
-            UserPool: !ImportValue PixelParkUserPoolId
-            Trigger: PostConfirmation
 
   # ========== User APIs ==========
 
