@@ -45,6 +45,4 @@ jobs:
               DbName='${{ secrets.DB_NAME }}' \
               DbUser='${{ secrets.DB_USER }}' \
               DbHost='${{ secrets.DB_HOST }}' \
-              DbPassword='${{ secrets.DB_PASSWORD }}' \
-              CognitoClientId='${{ secrets.COGNITO_CLIENT_ID }}' \
-              CognitoUserPool='${{ secrets.COGNITO_USER_POOL_ID }}'
+              DbPassword='${{ secrets.DB_PASSWORD }}'
