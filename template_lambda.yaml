@@ -62,6 +62,8 @@ Resources:
             RestApiId: !Ref PixelParkApi
             Path: /products
             Method: GET
+            Auth:
+              Authorizer: NONE
 
   # GET /products/{id}
   ProductsGetByIdFn:
@@ -78,6 +80,8 @@ Resources:
             RestApiId: !Ref PixelParkApi
             Path: /products/{id}
             Method: GET
+            Auth:
+              Authorizer: NONE
 
   # ========== Auth APIs ==========
 
@@ -94,6 +98,8 @@ Resources:
             RestApiId: !Ref PixelParkApi
             Path: /auth/register
             Method: POST
+            Auth:
+              Authorizer: NONE
 
   # POST /auth/confirm
   UserConfirmFn:
@@ -110,6 +116,8 @@ Resources:
             RestApiId: !Ref PixelParkApi
             Path: /auth/confirm
             Method: POST
+            Auth:
+              Authorizer: NONE
 
   # POST /auth/login
   UserLoginFn:
@@ -124,6 +132,8 @@ Resources:
             RestApiId: !Ref PixelParkApi
             Path: /auth/login
             Method: POST
+            Auth:
+              Authorizer: NONE
 
   # POST /auth/logout
   UserLogoutFn:
@@ -138,6 +148,8 @@ Resources:
             RestApiId: !Ref PixelParkApi
             Path: /auth/logout
             Method: POST
+            Auth:
+              Authorizer: NONE
 
   # ========== User APIs ==========
 
