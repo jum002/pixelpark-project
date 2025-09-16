@@ -1,5 +1,5 @@
 import json
-from src.utils.db import get_cursor
+from utils.db import get_cursor
 
 def lambda_handler(event, context):
     try:

@@ -1,8 +1,5 @@
 import json, textwrap
 
-from src.lambda_functions.auth.confirm_register import lambda_handler as confirm_handler
-from src.lambda_functions.auth.login import lambda_handler as login_handler
-
 def test_register_success(mock_db, mock_cognito):
     from src.lambda_functions.auth.register import lambda_handler as register_handler
 

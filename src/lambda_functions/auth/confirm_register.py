@@ -1,6 +1,6 @@
 import json, textwrap
-from src.utils.db import get_conn
-from src.utils.cognito import get_cognito_client, get_client_id
+from utils.db import get_conn
+from utils.cognito import get_cognito_client, get_client_id
 
 def lambda_handler(event, context):
     conn = None
