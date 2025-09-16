@@ -91,6 +91,8 @@ Resources:
     Properties:
       CodeUri: src/
       Handler: lambda_functions/auth/register.lambda_handler
+      Layers:
+        - arn:aws:lambda:us-west-1:809604783960:layer:PixelPark_layer:3
       Events:
         RegisterUser:
           Type: Api
@@ -173,6 +175,8 @@ Resources:
     Properties:
       CodeUri: src/
       Handler: lambda_functions/auth/login.lambda_handler
+      Layers:
+        - arn:aws:lambda:us-west-1:809604783960:layer:PixelPark_layer:3
       Events:
         LoginUser:
           Type: Api
