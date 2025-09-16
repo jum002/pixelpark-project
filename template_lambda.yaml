@@ -51,8 +51,8 @@ Resources:
   ProductsGetAllFn:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: src/lambda_functions/products/productsGetAll/
-      Handler: app.lambda_handler
+      CodeUri: src/
+      Handler: lambda_functions/products/getAll.lambda_handler
       Layers:
         - arn:aws:lambda:us-west-1:809604783960:layer:PixelPark_layer:3
       Events:
@@ -69,8 +69,8 @@ Resources:
   ProductsGetByIdFn:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: src/lambda_functions/products/productsGetById/
-      Handler: app.lambda_handler
+      CodeUri: src/
+      Handler: lambda_functions/products/getById.lambda_handler
       Layers:
         - arn:aws:lambda:us-west-1:809604783960:layer:PixelPark_layer:3
       Events:
@@ -89,8 +89,8 @@ Resources:
   UserRegisterFn:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: src/lambda_functions/auth/userRegister/
-      Handler: app.lambda_handler
+      CodeUri: src/
+      Handler: lambda_functions/auth/register.lambda_handler
       Events:
         RegisterUser:
           Type: Api
@@ -101,12 +101,12 @@ Resources:
             Auth:
               Authorizer: NONE
 
-  # POST /auth/confirm
+  # POST /auth/confirm-registration
   UserConfirmFn:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: src/lambda_functions/auth/userConfirm/
-      Handler: app.lambda_handler
+      CodeUri: src/
+      Handler: lambda_functions/auth/confirm_register.lambda_handler
       Layers:
         - arn:aws:lambda:us-west-1:809604783960:layer:PixelPark_layer:3
       Events:
@@ -114,7 +114,55 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref PixelParkApi
-            Path: /auth/confirm
+            Path: /auth/confirm-registration
+            Method: POST
+            Auth:
+              Authorizer: NONE
+
+  # POST /auth/resend-confirmation
+  ResendConfirmFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: lambda_functions/auth/confirm_resend.lambda_handler
+      Events:
+        ConfirmUser:
+          Type: Api
+          Properties:
+            RestApiId: !Ref PixelParkApi
+            Path: /auth/resend-confirmation
+            Method: POST
+            Auth:
+              Authorizer: NONE
+
+  # POST /auth/forgot-password
+  ForgotPasswordFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: lambda_functions/auth/forgot_password.lambda_handler
+      Events:
+        ConfirmUser:
+          Type: Api
+          Properties:
+            RestApiId: !Ref PixelParkApi
+            Path: /auth/forgot-password
+            Method: POST
+            Auth:
+              Authorizer: NONE
+
+  # POST /auth/confirm-reset-password
+  PasswordResetConfirmFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: lambda_functions/auth/confirm_reset_password.lambda_handler
+      Events:
+        ConfirmUser:
+          Type: Api
+          Properties:
+            RestApiId: !Ref PixelParkApi
+            Path: /auth/confirm-reset-password
             Method: POST
             Auth:
               Authorizer: NONE
@@ -123,8 +171,8 @@ Resources:
   UserLoginFn:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: src/lambda_functions/auth/userLogin/
-      Handler: app.lambda_handler
+      CodeUri: src/
+      Handler: lambda_functions/auth/login.lambda_handler
       Events:
         LoginUser:
           Type: Api
@@ -139,8 +187,8 @@ Resources:
   UserLogoutFn:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: src/lambda_functions/auth/userLogout/
-      Handler: app.lambda_handler
+      CodeUri: src/
+      Handler: lambda_functions/auth/logout.lambda_handler
       Events:
         LogoutUser:
           Type: Api
@@ -156,8 +204,8 @@ Resources:
   UserProfileFn:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: src/lambda_functions/profile/profileGetUser
-      Handler: app.lambda_handler
+      CodeUri: src/
+      Handler: lambda_functions/profile/getUser.lambda_handler
       Layers:
         - arn:aws:lambda:us-west-1:809604783960:layer:PixelPark_layer:3
       Events:
