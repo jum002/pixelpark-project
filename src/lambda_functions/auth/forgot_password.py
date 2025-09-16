@@ -1,9 +1,8 @@
 import json
+from botocore.exceptions import ClientError
 from utils.cognito import get_cognito_client, get_client_id
 
 def lambda_handler(event, context):
-    cognito = None
-
     try:
         body = json.loads(event.get("body") or "{}")
 
@@ -32,14 +31,24 @@ def lambda_handler(event, context):
             })
         }
 
-    except cognito.exceptions.UserNotFoundException:
-        return {
-            "statusCode": 404,
-            "body": json.dumps({
-                "success": False,
-                "error": "User not found"
-            })
-        }
+    except ClientError as e:
+        error_code = e.response["Error"]["Code"]
+        if error_code == "UserNotFoundException":
+            return {
+                "statusCode": 404,
+                "body": json.dumps({
+                    "success": False,
+                    "error": "User not found"
+                })
+            }
+        else:
+            return {
+                "statusCode": 400,
+                "body": json.dumps({
+                    "success": False,
+                    "error": error_code
+                })
+            }
 
     except Exception as e:
         return {

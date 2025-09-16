@@ -1,10 +1,10 @@
 import json, textwrap
+from botocore.exceptions import ClientError
 from utils.db import get_cursor
 from utils.cognito import get_cognito_client, get_client_id
 
 def lambda_handler(event, context):
     conn = None
-    cognito = None
 
     try:
         body = json.loads(event.get('body') or '{}')
@@ -50,13 +50,20 @@ def lambda_handler(event, context):
         }
     
     except cognito.exceptions.UsernameExistsException:
-        return {
-            "statusCode": 409,
-            "body": json.dumps({
-                "success": False,
-                "error": "User with email already exists"
-            })
-        }
+        error_code = e.response["Error"]["Code"]
+        if error_code == "UsernameExistsException":
+            return {
+                "statusCode": 409,
+                "body": json.dumps({
+                    "success": False,
+                    "error": "User with email already exists"
+                })
+            }
+        else:
+            return {
+                "statusCode": 400,
+                "body": json.dumps({"success": False, "error": error_code})
+            }
     
     except Exception as e:
         if conn and not conn.closed:

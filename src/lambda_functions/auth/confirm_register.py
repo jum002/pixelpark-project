@@ -4,7 +4,6 @@ from utils.cognito import get_cognito_client, get_client_id
 
 def lambda_handler(event, context):
     conn = None
-    cognito = None
 
     try:
         body = json.loads(event.get("body") or "{}")
