@@ -126,7 +126,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: src/
-      Handler: lambda_functions/auth/confirm_resend.lambda_handler
+      Handler: lambda_functions/auth/resend_confirmation.lambda_handler
       Events:
         ConfirmUser:
           Type: Api

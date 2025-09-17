@@ -1,6 +1,6 @@
 import json, textwrap
 from botocore.exceptions import ClientError
-from utils.db import get_conn
+from utils.db import get_cursor
 from utils.cognito import get_cognito_client, get_client_id
 
 def lambda_handler(event, context):
@@ -31,8 +31,8 @@ def lambda_handler(event, context):
             }
         ).get("AuthenticationResult", {})
 
-        conn = get_conn()
-        with conn.cursor() as cur:
+        conn, cursor = get_cursor()
+        with cursor as cur:
             cur.execute(
                 textwrap.dedent("""
                     INSERT INTO users (email, status)

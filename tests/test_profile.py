@@ -1,8 +1,9 @@
 import json
 
-def test_get_profile_success(mock_db):
-    from src.lambda_functions.profile.getUser import lambda_handler as get_profile_handler
+from lambda_functions.profile.getUser import lambda_handler as get_profile_handler
 
+
+def test_get_profile_success(mock_db):
     mock_conn, mock_cursor = mock_db
     mock_data = {"email": "test@example.com", "name": "Test User"}
     mock_cursor.fetchone.return_value = mock_data
@@ -23,8 +24,6 @@ def test_get_profile_success(mock_db):
 
 
 def test_get_profile_unauthorized(mock_db):
-    from src.lambda_functions.profile.getUser import lambda_handler as get_profile_handler
-    
     event = {
         "requestContext": {
             "authorizer": {"claims": {}}

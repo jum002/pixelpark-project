@@ -1,5 +1,5 @@
 import json
-from utils.cognito import get_cognito_client
+from utils.cognito import get_cognito_client, get_client_id
 
 def lambda_handler(event, context):
     cognito = None

@@ -49,7 +49,7 @@ def lambda_handler(event, context):
             })
         }
     
-    except cognito.exceptions.UsernameExistsException:
+    except ClientError as e:
         error_code = e.response["Error"]["Code"]
         if error_code == "UsernameExistsException":
             return {

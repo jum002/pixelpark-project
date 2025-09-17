@@ -2,7 +2,6 @@
 
 Scalable serverless backend infrastructure built on AWS with cloud-native CI/CD workflows.
 
-
 ### Services
 
 - API Gateway – Exposes REST API endpoints
@@ -17,8 +16,18 @@ Scalable serverless backend infrastructure built on AWS with cloud-native CI/CD 
 | - | - | - | - | - |
 | GET  | /products  |  |  get all products  |  no  |
 | GET  | /products/{id}  |  |  get product by id  |  no  |
-| GET  | /auth/register  | email, password |  user sign up  |  no  |
-| GET  | /auth/confirm  | email, code |  user email confirmation  |  no  |
-| GET  | /auth/login  | email, password |  user login  |  no  |
-| GET  | /auth/logout  | access_token |  user logout  |  no  |
+| POST  | /auth/register  | email, password |  user sign up  |  no  |
+| POST  | /auth/confirm-registration  | email, code |  user email confirmation  |  no  |
+| POST  | /auth/resend-confirmation  | email |  resend confirmation code to user email  |  no  |
+| POST  | /auth/forgot-password  | email |  send password reset code to user email  |  no  |
+| POST  | /auth/confirm-reset-password  | email, code, new_password |  user confirm reset password  |  no  |
+| POST  | /auth/login  | email, password |  user login  |  no  |
+| POST  | /auth/logout  | access_token |  user logout  |  no  |
 | GET  | /profile  |  |  get user data  |  yes  |
+
+### Setup
+
+- Python Version: `3.11`.
+- Create and activate virtual environment.
+- Install dependencies from `requirements.txt`. 
+- Run tests with `pytest`.

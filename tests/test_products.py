@@ -1,8 +1,9 @@
 import json
 
-def test_get_all_products_success(mock_db):
-    from src.lambda_functions.products.getAll import lambda_handler as get_all_handler
+from lambda_functions.products.getAll import lambda_handler as get_all_handler
+from lambda_functions.products.getById import lambda_handler as get_by_id_handler
 
+def test_get_all_products_success(mock_db):
     mock_conn, mock_cursor = mock_db
     mock_data = [
         {"id": 1, "name": "Product A"},
@@ -19,8 +20,6 @@ def test_get_all_products_success(mock_db):
     
 
 def test_get_product_by_id_success(mock_db):
-    from src.lambda_functions.products.getById import lambda_handler as get_by_id_handler
-
     mock_conn, mock_cursor = mock_db
     mock_data = {"id": 1, "name": "Product A"}
     mock_cursor.fetchone.return_value = mock_data
